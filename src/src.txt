@@ -1,0 +1,10 @@
+📂 src/ → 핵심 코드 파일 저장
+✅ 역할:
+
+ArUco 마커 인식, 자율주행 제어 등 프로젝트의 핵심 코드 저장
+기능별로 Python 파일을 나눠 정리
+✅ 포함할 파일:
+
+detect_aruco.py → ArUco 마커 탐지 코드
+motor_control.py → 모터 제어 코드
+autonomous_drive.py → 전체 실행 코드
