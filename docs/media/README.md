@@ -1,14 +1,18 @@
-# 프로젝트 이미지
+# 사진·영상 자료
 
 | 파일 | 내용 |
 | --- | --- |
-| cart_complete.png | 완성 카트 |
-| ceiling_layout.png | 천장 마커 4×4 배치 개념도 |
-| navigation_flow.png | 영상 피드백 주행 흐름 |
+| drive.mp4 | 실제 주행 영상 · 약 36초 |
+| recognition_log.mp4 | 실제 마커 인식·로그 영상 · 약 36초 |
+| drive_video_preview.jpg | 주행 영상에서 추출한 썸네일 |
+| log_video_preview.jpg | 로그 영상에서 추출한 썸네일 |
+| cart_complete.png | 완성 카트 사진 |
+| drive_start.png · drive_arrival.png | 출발·도착 장면 |
+| diamond_before.png · diamond_detected.png | Diamond 검출 전·후 |
+| ceiling_layout.png | 천장 4×4 배치 개념도 |
+| navigation_flow.png | 주행 피드백 흐름도 |
 | pose_control_concept.png | 위치·방향·회전 오차 개념도 |
-| drive_start.png | 출발 화면 |
-| drive_arrival.png | 도착 화면 |
-| diamond_before.png | 검출 전 천장 영상 |
-| diamond_detected.png | 검출 후 방향 표시 |
+| vision_control_overview.png | Calibration·Detection·Pose·PID 설명 개념도 |
+| feature_localization_concept.png | 특징점·Homography·Motion Blur 설명 개념도 |
 
-추가 자료: [대표 시연 영상] · [캘리브레이션 화면] · [특징점 비교] · [Homography 추정] · [Motion Blur 화면] · [제어 로그/그래프]
+설명 개념도는 구현 원리를 시각화한 자료입니다. 주행과 인식 화면은 실제 영상에서 확인할 수 있습니다.

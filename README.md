@@ -11,8 +11,9 @@
 
 ## 시연
 
-> **[대표 시연 영상]**  
-> 1번 위치에서 출발해 16번 목적지에 도착하는 전체 주행 영상
+[![대표 주행 영상](docs/media/drive_video_preview.jpg)](docs/media/drive.mp4)
+
+▶ **[주행 영상 보기 · 약 36초](docs/media/drive.mp4)** — 1번 위치에서 출발해 16번 목적지로 이동하는 주행 장면
 
 | 완성 카트 | 천장 마커 배치 |
 | :---: | :---: |
@@ -21,7 +22,7 @@
 
 | 출발 | 영상 인식·제어 | 도착 |
 | :---: | :---: | :---: |
-| ![1번 위치 출발](docs/media/drive_start.png) | **[마커 인식 화면과 제어 로그 영상]** | ![16번 목적지 도착](docs/media/drive_arrival.png) |
+| ![1번 위치 출발](docs/media/drive_start.png) | [![마커 인식·로그 영상](docs/media/log_video_preview.jpg)](docs/media/recognition_log.mp4) | ![16번 목적지 도착](docs/media/drive_arrival.png) |
 | 초기 마커 인식 | 마커 ID·좌표축·Yaw와 제어 로그 | 목적지 도착 |
 
 ---
@@ -81,11 +82,15 @@ flowchart LR
 
 ## 핵심 구현
 
+![영상 기반 위치 추정과 피드백 제어 개념도](docs/media/vision_control_overview.png)
+
+*Camera Calibration → Diamond Detection → Pose Estimation → PID Control을 설명하는 개념도*
+
 ### 1. Camera Calibration
 
 ChArUco 보드의 코너 관측값으로 **카메라 내부 행렬 K와 왜곡 계수 D**를 구하고 저장했습니다. 저장한 파라미터를 Pose Estimation에 적용해 영상 좌표와 마커의 공간 좌표를 연결합니다.
 
-> **[캘리브레이션 보드 사진 / 코너 검출 화면]**
+위 개념도의 첫 번째 단계는 여러 시점에서 관측한 보드 코너로 K·D를 계산하는 과정을 보여줍니다.
 
 ### 2. ChArUco Diamond 검출과 마커 선택
 
@@ -111,7 +116,7 @@ Diamond의 3D 코너 좌표와 검출한 2D 코너 좌표를 `solvePnP`에 입�
 
 **1번에서 16번으로 이동한다는 것은 출발지와 목적지를 뜻하며 모든 번호를 순서대로 방문하는 방식은 아닙니다.**
 
-> **[BFS 경로와 이동 방향 배치도]**
+[천장 노드·출발·도착 배치도](docs/media/ceiling_layout.png)
 
 ### 5. 영상 피드백 PID 제어
 
@@ -119,13 +124,13 @@ Diamond의 3D 코너 좌표와 검출한 2D 코너 좌표를 `solvePnP`에 입�
 
 회전 오차는 ±180° 범위로 정규화해 가까운 방향으로 회전하도록 처리합니다. PID 출력에 따라 모터 구동을 조정하고 갱신된 영상으로 오차를 다시 확인합니다.
 
-> **[위치·회전 보정 영상 / 보정 전·후 로그]**
+▶ [마커 인식·제어 로그 영상](docs/media/recognition_log.mp4)
 
 ### 6. 영상 캡처와 제어 처리
 
 개발 코드에서는 카메라 캡처와 모터 제어를 별도 스레드로 구성했습니다. 프레임 하나와 캡처 시각만 보관하고 구동 펄스 이후의 새 프레임을 읽어 **최신 관측값을 처리하는 구조**를 사용했습니다.
 
-> **[영상 캡처·인식·모터 제어 흐름도]**
+[캡처·인식·구동 피드백 흐름도](docs/media/navigation_flow.png)
 
 ## 개발 과정
 
@@ -135,11 +140,15 @@ Diamond의 3D 코너 좌표와 검출한 2D 코너 좌표를 `solvePnP`에 입�
 
 이동 중 **Motion Blur로 특징점 추출과 매칭이 불안정**했고 해상도를 높이면 연산 부담이 커졌습니다. 이에 식별 가능한 ID와 코너를 제공하는 **ChArUco Diamond 기반 위치·방향 추정**으로 전환했습니다.
 
+![특징점 매칭·Homography·Motion Blur 설명 개념도](docs/media/feature_localization_concept.png)
+
+*알고리즘 비교와 방식 전환의 판단 과정을 설명하는 개념도*
+
 | 비교 항목 | 자료 |
 | --- | --- |
-| 특징점 매칭 | **[ORB·SIFT·BRISK·AKAZE 비교 이미지]** |
-| 위치 추정 | **[Homography 기반 촬영 영역 추정 화면]** |
-| 이동 조건 | **[Motion Blur 발생 화면]** |
+| 특징점 매칭 | [특징점 매칭 개념](docs/media/feature_localization_concept.png) |
+| 위치 추정 | [Homography 촬영 영역 추정 개념](docs/media/feature_localization_concept.png) |
+| 이동 조건 | [Motion Blur·해상도 제약 개념](docs/media/feature_localization_concept.png) |
 | 방식 전환 | [Diamond 검출·방향 표시](docs/media/diamond_detected.png) |
 
 ## 실험 결과
@@ -152,7 +161,7 @@ Diamond의 3D 코너 좌표와 검출한 2D 코너 좌표를 `solvePnP`에 입�
 | 위치 보정 | **[보정 전·후 중심 오차 입력]** |
 | 목적지 이동 | **[시연 조건·반복 횟수·도착 결과 입력]** |
 
-> **[결과 그래프 / 실험 로그]**
+> [실제 마커 인식·로그 영상](docs/media/recognition_log.mp4)
 
 ## 저장소 구성
 
@@ -207,8 +216,8 @@ python scripts/run_cart.py --drive
 ## 추가 자료
 
 - **[프로젝트 보고서]**
-- **[전체 시연 영상]**
-- **[마커 인식·제어 로그 영상]**
+- [전체 주행 영상](docs/media/drive.mp4)
+- [마커 인식·제어 로그 영상](docs/media/recognition_log.mp4)
 - **[포트폴리오 링크]**
 
 ## 캘리브레이션
