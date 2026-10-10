@@ -166,9 +166,12 @@ ArUco_Autonomous_Car/
 │   ├── autonomous_drive.py # 영상 인식·BFS·PID 주행 제어
 │   ├── config.json         # 카메라·마커·모터 설정
 │   └── experiments/        # 개발 단계별 코드
-├── scripts/               # 실행·캘리브레이션 보조 스크립트
+├── scripts/
+│   ├── run_cart.py         # 주행 실행 진입점
+│   └── calibrate_camera.py # ChArUco 캘리브레이션·JSON 저장
 ├── data/                  # 캘리브레이션 파라미터·실험 로그
 ├── docs/                  # 사진·도식·시연 자료·기술 문서
+│   ├── media/             # 사진·영상 배치 안내
 │   ├── system_architecture.md
 │   └── research_notes.md
 └── models/                # 기존 디렉터리
@@ -198,3 +201,18 @@ calib_1109.npz의 K·dists를 data/calibration.json으로 변환해 연결했습
 - **[전체 시연 영상]**
 - **[마커 인식·제어 로그 영상]**
 - **[포트폴리오 링크]**
+
+## 보조 스크립트
+
+```bash
+python scripts/run_cart.py
+python scripts/run_cart.py --drive
+# 출력한 보드의 실측 길이를 미터 단위로 입력
+python scripts/calibrate_camera.py --square 0.03875 --marker 0.01875
+```
+
+보드 치수 예시는 기존 코드의 비율을 참고한 값입니다. 실제 출력 크기에 맞춰 입력합니다. Space로 서로 다른 각도의 보드 영상을 10장 이상 캡처한 뒤 Esc로 K·D와 RMS 재투영 오차를 저장합니다.
+
+- [시스템 구성과 좌표·제어 상태](docs/system_architecture.md)
+- [개발 과정과 실험 기록](docs/research_notes.md)
+- [사진·영상 배치 위치](docs/media/README.md)
