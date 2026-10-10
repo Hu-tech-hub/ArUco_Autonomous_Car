@@ -46,8 +46,11 @@
 | 카메라 | 천장을 촬영하도록 배치한 카메라 |
 | 공식 제품 | [Hiwonder TurboPi](https://www.hiwonder.com/products/turbopi) |
 | 장비·SDK 문서 | [TurboPi 공식 문서](https://docs.hiwonder.com/projects/TurboPi/en/standard/) |
-| 실제 구매처 | **[구매처·판매 페이지 링크]** |
-| 구매 구성 | **[당시 Raspberry Pi 모델·메모리·키트 옵션]** |
+| 구매처 | AliExpress · **Youfang Smart Store** |
+| 구매 제품명 | Hiwonder Raspberry Pi AI Vision Car |
+| 구매 구성 | Raspberry Pi 보드 미포함 키트 |
+| 사용 보드 | 별도로 보유한 Raspberry Pi 5 |
+| 구매일 | 2024.10.11 |
 
 현재 판매되는 제품 옵션과 프로젝트 당시 구매 구성은 다를 수 있습니다.
 
