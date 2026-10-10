@@ -179,7 +179,8 @@ ArUco_Autonomous_Car/
 │   └── control/
 ├── data/                     # 캘리브레이션·실험 로그
 ├── docs/                     # 기술 문서·사진/영상 자리
-├── tests/                    # 검출·자세 추정·제어 통합 테스트
+├── vendor/hiwonder/          # Hiwonder 메카넘 SDK·확장보드 연결
+├── tests/                    # 검출·자세 추정·제어·I²C 통합 테스트
 └── requirements.txt
 ```
 
@@ -187,11 +188,11 @@ ArUco_Autonomous_Car/
 
 - Raspberry Pi와 카메라가 연결된 Hiwonder 메카넘 휠 장비
 - Python · NumPy · ArUco 모듈을 포함한 OpenCV
-- Hiwonder SDK와 장비별 설정
+- 레포의 `vendor/hiwonder` 메카넘 SDK와 I²C 확장보드 연결
 - 사용 카메라의 내부 파라미터·왜곡 계수
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements-hardware.txt
 python scripts/run_cart.py
 # 장비에서 모터 구동 활성화
 python scripts/run_cart.py --drive
@@ -225,13 +226,15 @@ python scripts/calibrate_camera.py --square 0.03875 --marker 0.01875
 python -m unittest discover -s tests -v
 ```
 
-OpenCV 4.11에서 **10개 테스트 통과**:
+OpenCV 4.11에서 **13개 테스트 통과**:
 
 - 생성한 Diamond 영상의 ID·코너 검출
 - pinhole·fisheye 합성 투영에서 위치 추정
 - 4×4 격자 전체 출발·도착 조합의 BFS 경로
 - 위치·회전·다음 노드 이동·목적지 정지 상태
 - 오래된 프레임·관측 실패·전환 시간 초과 시 정지
+- Hiwonder SDK의 모터 명령과 I²C 통신 형식
+- 모터·서보 명령의 레지스터·부호·출력 범위
 - 모터 예외 발생 시 정지
 - 검출부터 목적지 정지·CSV 기록까지 통합 흐름
 
@@ -244,3 +247,10 @@ OpenCV 4.11에서 **10개 테스트 통과**:
 - [개발 과정과 실험 기록](docs/research_notes.md)
 - [개발 단계별 실험 코드](experiments/README.md)
 - [사진·영상 배치 위치](docs/media/README.md)
+
+## Hiwonder 하드웨어 연결
+
+메카넘 휠 계산은 Hiwonder TurboPi SDK를 사용했습니다. 확장보드 통신은 I²C 인터페이스로 분리해 `src/hardware.py`와 연결했습니다. SDK 경로는 `config.json`에서 레포의 `vendor/hiwonder`를 참조합니다.
+
+- [장비 연결·설치·실행](docs/setup.md)
+- [Hiwonder SDK 구성](vendor/hiwonder/README.md)

@@ -122,16 +122,29 @@ class Navigator:
 class MotorDriver:
     def __init__(self, cfg, drive=False):
         self.cfg,self.drive,self.chassis = cfg,drive,None
+        self.board = None
         if drive:
             import sys
             sys.path.insert(0,cfg['sdk_path'])
             from HiwonderSDK.mecanum import MecanumChassis
+            from HiwonderSDK import Board
+            self.board = Board
             self.chassis = MecanumChassis()
             self.stop()
+            if cfg.get('servo_initial_pulses'):
+                from HiwonderSDK import Board
+                for index,pulse in cfg['servo_initial_pulses'].items():
+                    Board.setPWMServoPulse(int(index),pulse,1000)
 
     def stop(self):
-        if self.chassis is not None:
+        if self.board is not None and hasattr(self.board,'stopAllMotors'):
+            self.board.stopAllMotors()
+        elif self.chassis is not None:
             self.chassis.set_velocity(0,90,0)
+
+    def close(self):
+        if self.board is not None and hasattr(self.board,'close'):
+            self.board.close()
 
     def execute(self, action):
         if action.kind == 'stop':

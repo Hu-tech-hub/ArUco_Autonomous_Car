@@ -73,12 +73,15 @@ def main():
     except KeyboardInterrupt:
         print('Stopped by user')
     finally:
-        motors.stop()
-        camera.close()
-        if logger is not None:
-            logger.close()
-        if not args.headless:
-            cv2.destroyAllWindows()
+        try:
+            motors.stop()
+        finally:
+            camera.close()
+            if logger is not None:
+                logger.close()
+            motors.close()
+            if not args.headless:
+                cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':

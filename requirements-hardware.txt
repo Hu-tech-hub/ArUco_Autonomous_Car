@@ -1,0 +1,2 @@
+-r requirements.txt
+smbus2>=0.4,<1

@@ -7,6 +7,7 @@ def load_config(path):
     path = Path(path).resolve()
     cfg = json.loads(path.read_text(encoding='utf-8'))
     cfg['calibration'] = str((path.parent/cfg['calibration']).resolve())
+    cfg['sdk_path'] = str((path.parent/cfg['sdk_path']).resolve())
     if not 1 <= cfg['goal'] <= cfg['grid_size']**2:
         raise ValueError('Goal outside grid')
     for key in ('resolution','calibration_resolution'):
