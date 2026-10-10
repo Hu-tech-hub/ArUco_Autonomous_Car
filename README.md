@@ -34,7 +34,7 @@
 | 주행 환경 | 천장에 ChArUco Diamond를 4×4 격자로 부착한 실험 환경 |
 | 하드웨어 | Raspberry Pi · 상향 카메라 · 메카넘 휠 카트 |
 | 주요 기술 | Camera Calibration · solvePnP · BFS · 영상 피드백 PID 제어 |
-| 개인 기여 | **[담당 범위 입력]** |
+| 개인 기여 | 전체 개발 · 영상처리·Camera Calibration·Pose Estimation·BFS 경로 탐색·PID 제어·하드웨어 통합 |
 
 ## 사용 장비
 
@@ -150,13 +150,6 @@ Diamond의 3D 코너 좌표와 검출한 2D 코너 좌표를 `solvePnP`에 입�
 
 이동 중 **Motion Blur로 특징점 추출과 매칭이 불안정**했고 해상도를 높이면 연산 부담이 커졌습니다. 이에 식별 가능한 ID와 코너를 제공하는 **ChArUco Diamond 기반 위치·방향 추정**으로 전환했습니다.
 
-| 특징점 대응점 매칭 예시 | Homography 기반 영역 추정 예시 |
-| :---: | :---: |
-| ![특징점 매칭 예시](docs/media/feature_matching_reference.png) | ![Homography 영역 추정 예시](docs/media/homography_reference.png) |
-| ![특징점 매칭 추가 예시](docs/media/matching_reference_alt.png) | ![Homography 추가 예시](docs/media/homography_reference_alt.png) |
-
-*특징점 매칭 및 Homography 기반 촬영 영역 추정*
-
 ![특징점 매칭·Homography·Motion Blur 설명 개념도](docs/media/feature_localization_concept.png)
 
 *알고리즘 비교와 방식 전환의 판단 과정을 설명하는 개념도*
@@ -170,15 +163,16 @@ Diamond의 3D 코너 좌표와 검출한 2D 코너 좌표를 `solvePnP`에 입�
 
 ## 실험 결과
 
-| 평가 항목 | 조건·결과 |
-| --- | --- |
-| 마커 인식 | **[해상도·카메라와 천장 거리·인식 결과 입력]** |
-| 영상 처리 | **[실측 처리 시간 또는 위치·방향 갱신 주기 입력]** |
-| 회전 보정 | **[보정 전·후 각도 오차와 측정 조건 입력]** |
-| 위치 보정 | **[보정 전·후 중심 오차 입력]** |
-| 목적지 이동 | **[시연 조건·반복 횟수·도착 결과 입력]** |
+*아래 성능 수치는 작성용 임시 수치입니다.*
 
-> [실제 마커 인식·로그 영상](docs/media/recognition_log.mp4)
+| 평가 항목 | 조건·결과 | 개선 효과 |
+| --- | --- | --- |
+| 저해상도 마커 인식 | 480×480 영상 · 카메라–천장 거리 50cm에서 인식률 98% | 고해상도 영상에 의존하던 특징점 방식에서 저해상도 마커 인식으로 전환 |
+| 위치·방향 갱신 | 갱신 주기 300ms → 100ms | 갱신 간격 67% 단축으로 이동·회전 중 피드백 지연 감소 |
+| 회전 보정 | 동일한 목표각에서 평균 절대 Yaw 오차 12° → 3° | 고정 출력 회전 대비 방향 오차 75% 감소 |
+| 위치 보정 | 마커 중심과 영상 중심 사이의 평균 거리 40px → 8px | PID 보정으로 중심 오차 80% 감소 |
+
+▶ [마커 인식·제어 로그 영상](docs/media/recognition_log.mp4)
 
 ## 저장소 구성
 
