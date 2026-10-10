@@ -1,11 +1,14 @@
-# 사진·영상 배치
+# 프로젝트 이미지
 
-[완성 카트 사진]
+| 파일 | 내용 |
+| --- | --- |
+| cart_complete.png | 완성 카트 |
+| ceiling_layout.png | 천장 마커 4×4 배치 개념도 |
+| navigation_flow.png | 영상 피드백 주행 흐름 |
+| pose_control_concept.png | 위치·방향·회전 오차 개념도 |
+| drive_start.png | 출발 화면 |
+| drive_arrival.png | 도착 화면 |
+| diamond_before.png | 검출 전 천장 영상 |
+| diamond_detected.png | 검출 후 방향 표시 |
 
-[천장 마커 배치도]
-
-[대표 시연 영상]
-
-[마커 인식·제어 로그 영상]
-
-이미지 파일은 이 폴더에 올린 뒤 루트 README의 해당 표시를 이미지 링크로 교체합니다. 영상은 GitHub 첨부 링크 또는 영상 서비스 링크로 연결합니다.
+추가 자료: [대표 시연 영상] · [캘리브레이션 화면] · [특징점 비교] · [Homography 추정] · [Motion Blur 화면] · [제어 로그/그래프]

@@ -48,8 +48,8 @@ PID는 속도 명령의 크기에 반영됩니다. translation은 X·Y 출력이
 
 CSV에는 마커 노드·중심 오차·Yaw·재투영 오차·처리 시간·상태·명령을 남깁니다. processing_ms는 영상 검출부터 제어 판단까지의 시간이며 전체 주행 갱신 주기와 다릅니다.
 
-**[시스템 구성도]**
+![영상 피드백 주행 흐름](media/navigation_flow.png)
 
-**[천장 4×4 마커 배치도]**
+![천장 4×4 배치](media/ceiling_layout.png)
 
-**[좌표계·회전 오차 설명도]**
+![위치·방향·회전 오차 개념](media/pose_control_concept.png)

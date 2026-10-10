@@ -14,7 +14,7 @@ ChArUco 보드 캘리브레이션 → ArUco 검출 → Diamond 구성 → 가까
 
 **[캘리브레이션 화면]**
 
-**[Diamond 검출과 좌표축 영상]**
+![Diamond 검출과 방향 표시](media/diamond_detected.png)
 
 ## 주행 제어
 
@@ -24,7 +24,9 @@ ChArUco 보드 캘리브레이션 → ArUco 검출 → Diamond 구성 → 가까
 
 **[보정 전·후 회전 오차]**
 
-**[출발·도착 시연 영상]**
+| 출발 | 도착 |
+| :---: | :---: |
+| ![출발](media/drive_start.png) | ![도착](media/drive_arrival.png) |
 
 ## 기록할 실험 조건
 

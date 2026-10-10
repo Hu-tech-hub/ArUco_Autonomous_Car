@@ -16,12 +16,12 @@
 
 | 완성 카트 | 천장 마커 배치 |
 | :---: | :---: |
-| **[완성 카트 사진]** | **[4×4 천장 마커 배치도]** |
+| ![완성 카트](docs/media/cart_complete.png) | ![천장 4×4 마커 배치](docs/media/ceiling_layout.png) |
 | 상향 카메라와 메카넘 휠을 장착한 카트 | 천장 노드 16개와 출발·도착 위치 |
 
 | 출발 | 영상 인식·제어 | 도착 |
 | :---: | :---: | :---: |
-| **[1번 위치 출발 화면]** | **[마커 인식 화면과 제어 로그 영상]** | **[16번 목적지 도착 화면]** |
+| ![1번 위치 출발](docs/media/drive_start.png) | **[마커 인식 화면과 제어 로그 영상]** | ![16번 목적지 도착](docs/media/drive_arrival.png) |
 | 초기 마커 인식 | 마커 ID·좌표축·Yaw와 제어 로그 | 목적지 도착 |
 
 ---
@@ -56,8 +56,7 @@
 
 ## 시스템 구성
 
-> **[시스템 구성도]**  
-> 천장 마커 → 상향 카메라 → Raspberry Pi 영상 처리 → 위치·방향 추정 → 경로 탐색 → 모터 제어
+![영상 피드백 주행 흐름](docs/media/navigation_flow.png)
 
 ```mermaid
 flowchart LR
@@ -94,8 +93,9 @@ ChArUco 보드의 코너 관측값으로 **카메라 내부 행렬 K와 왜곡 �
 
 **천장 노드 16개와 개별 ArUco ID는 구분됩니다.** 한 노드는 네 개의 ArUco ID로 구성된 Diamond 하나에 대응합니다.
 
-> **[검출 전·후 비교 이미지]**  
-> 원본 천장 영상 → ArUco 코너·ID 검출 → Diamond 선택
+| 검출 전 | 검출 후 |
+| :---: | :---: |
+| ![천장 Diamond 원본](docs/media/diamond_before.png) | ![Diamond 검출과 방향 표시](docs/media/diamond_detected.png) |
 
 ### 3. Pose Estimation과 방향 시각화
 
@@ -103,7 +103,7 @@ Diamond의 3D 코너 좌표와 검출한 2D 코너 좌표를 `solvePnP`에 입�
 
 `Rodrigues`로 회전 행렬을 구하고 마커 좌표계에서의 카메라 위치와 Yaw를 계산합니다. `projectPoints`로 좌표축을 영상에 투영해 추정 결과를 확인합니다.
 
-> **[마커 좌표축·카트 방향·목표 방향·회전 오차 설명도]**
+![위치·방향·회전 오차 개념](docs/media/pose_control_concept.png)
 
 ### 4. BFS 경로 탐색
 
@@ -140,7 +140,7 @@ Diamond의 3D 코너 좌표와 검출한 2D 코너 좌표를 `solvePnP`에 입�
 | 특징점 매칭 | **[ORB·SIFT·BRISK·AKAZE 비교 이미지]** |
 | 위치 추정 | **[Homography 기반 촬영 영역 추정 화면]** |
 | 이동 조건 | **[Motion Blur 발생 화면]** |
-| 방식 전환 | **[Diamond 검출·Pose Estimation 화면]** |
+| 방식 전환 | [Diamond 검출·방향 표시](docs/media/diamond_detected.png) |
 
 ## 실험 결과
 
