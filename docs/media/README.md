@@ -16,3 +16,14 @@
 | feature_localization_concept.png | 특징점·Homography·Motion Blur 설명 개념도 |
 
 설명 개념도는 구현 원리를 시각화한 자료입니다. 주행과 인식 화면은 실제 영상에서 확인할 수 있습니다.
+
+## 원자료에서 추가한 기술 설명 이미지
+
+- `feature_matching_reference.png` · `matching_reference_alt.png`: 특징점 매칭 설명 예시
+- `homography_reference.png` · `homography_reference_alt.png`: Homography 영역 추정 설명 예시
+- `calibration_board_types.png`: Chessboard·ArUco·ChArUco 비교
+- `diamond_example_before.png` · `diamond_example_detected.png`: Diamond 검출·좌표축 설명 예시
+- `camera_projection_model.png`: 카메라 투영 모델
+- `expansion_board_interfaces.png`: 확장보드 인터페이스
+
+출처 문서: `[캡디]김상엽 진행 내용 보고.docx`와 `캡스톤 디자인 결과 보고서.docx`에 수록된 이미지.

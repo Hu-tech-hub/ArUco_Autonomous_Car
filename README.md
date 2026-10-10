@@ -90,7 +90,9 @@ flowchart LR
 
 ChArUco 보드의 코너 관측값으로 **카메라 내부 행렬 K와 왜곡 계수 D**를 구하고 저장했습니다. 저장한 파라미터를 Pose Estimation에 적용해 영상 좌표와 마커의 공간 좌표를 연결합니다.
 
-위 개념도의 첫 번째 단계는 여러 시점에서 관측한 보드 코너로 K·D를 계산하는 과정을 보여줍니다.
+![Chessboard·ArUco·ChArUco 보드 비교](docs/media/calibration_board_types.png)
+
+*진행 보고서에 수록한 Chessboard·ArUco·ChArUco 보드 구성 비교*
 
 ### 2. ChArUco Diamond 검출과 마커 선택
 
@@ -102,13 +104,23 @@ ChArUco 보드의 코너 관측값으로 **카메라 내부 행렬 K와 왜곡 �
 | :---: | :---: |
 | ![천장 Diamond 원본](docs/media/diamond_before.png) | ![Diamond 검출과 방향 표시](docs/media/diamond_detected.png) |
 
+| Diamond 구성 예시 | 좌표축 투영 예시 |
+| :---: | :---: |
+| ![Diamond 구성 예시](docs/media/diamond_example_before.png) | ![Diamond 좌표축 검출 예시](docs/media/diamond_example_detected.png) |
+
+*진행 보고서에 수록한 Diamond 검출·좌표축 투영 설명 자료*
+
 ### 3. Pose Estimation과 방향 시각화
 
 Diamond의 3D 코너 좌표와 검출한 2D 코너 좌표를 `solvePnP`에 입력해 **회전 벡터 rvec과 이동 벡터 tvec**을 계산합니다.
 
 `Rodrigues`로 회전 행렬을 구하고 마커 좌표계에서의 카메라 위치와 Yaw를 계산합니다. `projectPoints`로 좌표축을 영상에 투영해 추정 결과를 확인합니다.
 
-![위치·방향·회전 오차 개념](docs/media/pose_control_concept.png)
+| 카메라 투영 모델 | 카트의 위치·방향 관계 |
+| :---: | :---: |
+| ![카메라 투영 모델](docs/media/camera_projection_model.png) | ![위치·방향·회전 오차 개념](docs/media/pose_control_concept.png) |
+
+*결과 보고서의 카메라 투영 모델과 카트 위치·방향 설명 개념도*
 
 ### 4. BFS 경로 탐색
 
@@ -139,6 +151,13 @@ Diamond의 3D 코너 좌표와 검출한 2D 코너 좌표를 `solvePnP`에 입�
 천장 영상으로 위치를 추정하기 위해 **ORB·SIFT·BRISK·AKAZE의 처리속도와 매칭 안정성**을 비교했습니다. 영상 전처리와 특징점 대응점 기반 Homography로 촬영 영역의 위치 추정을 시도했습니다.
 
 이동 중 **Motion Blur로 특징점 추출과 매칭이 불안정**했고 해상도를 높이면 연산 부담이 커졌습니다. 이에 식별 가능한 ID와 코너를 제공하는 **ChArUco Diamond 기반 위치·방향 추정**으로 전환했습니다.
+
+| 특징점 대응점 매칭 예시 | Homography 기반 영역 추정 예시 |
+| :---: | :---: |
+| ![특징점 매칭 예시](docs/media/feature_matching_reference.png) | ![Homography 영역 추정 예시](docs/media/homography_reference.png) |
+| ![특징점 매칭 추가 예시](docs/media/matching_reference_alt.png) | ![Homography 추가 예시](docs/media/homography_reference_alt.png) |
+
+*진행 보고서에서 위치 추정 원리를 설명한 예시 이미지*
 
 ![특징점 매칭·Homography·Motion Blur 설명 개념도](docs/media/feature_localization_concept.png)
 
@@ -263,3 +282,10 @@ OpenCV 4.11에서 **13개 테스트 통과**:
 
 - [장비 연결·설치·실행](docs/setup.md)
 - [Hiwonder SDK 구성](vendor/hiwonder/README.md)
+
+
+### 확장보드 인터페이스
+
+![Hiwonder 확장보드 인터페이스 구성](docs/media/expansion_board_interfaces.png)
+
+*진행 보고서에 정리한 모터·서보·I²C 등 확장보드 연결 구성*
