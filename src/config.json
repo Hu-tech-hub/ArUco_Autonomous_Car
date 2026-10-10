@@ -1,0 +1,39 @@
+{
+  "camera": 0,
+  "resolution": [
+    640,
+    480
+  ],
+  "calibration": "../data/calibration.json",
+  "calibration_resolution": null,
+  "sdk_path": "/home/pi/TurboPi/",
+  "diamond_side_m": 0.05,
+  "square_marker_ratio": 2.0,
+  "goal": 16,
+  "center_tolerance_px": 10,
+  "angle_tolerance_deg": 3,
+  "pulse_seconds": 0.1,
+  "forward_speed": 40,
+  "rotation_speed": 2,
+  "x_sign": -1,
+  "y_sign": 1,
+  "rotation_sign": 1,
+  "marker_nodes": {
+    "1,2,3,4": 1,
+    "5,6,7,8": 2,
+    "9,10,11,12": 3,
+    "13,14,15,16": 4,
+    "17,18,19,20": 5,
+    "21,22,23,24": 6,
+    "25,26,27,28": 7,
+    "29,30,31,32": 8,
+    "33,34,35,36": 9,
+    "37,38,39,40": 10,
+    "41,42,43,44": 11,
+    "45,46,47,48": 12,
+    "49,50,51,52": 13,
+    "53,54,55,56": 14,
+    "57,58,59,60": 15,
+    "61,62,63,64": 16
+  }
+}

@@ -37,6 +37,20 @@
 | 주요 기술 | Camera Calibration · solvePnP · BFS · 영상 피드백 PID 제어 |
 | 개인 기여 | **[담당 범위 입력]** |
 
+## 사용 장비
+
+| 항목 | 정보 |
+| --- | --- |
+| 제조사·플랫폼 | 코드의 SDK와 설치 경로 기준 **Hiwonder TurboPi** |
+| 구동부 | 메카넘 휠 섀시 · Hiwonder 모터 제어 SDK |
+| 카메라 | 천장을 촬영하도록 배치한 카메라 |
+| 공식 제품 | [Hiwonder TurboPi](https://www.hiwonder.com/products/turbopi) |
+| 장비·SDK 문서 | [TurboPi 공식 문서](https://docs.hiwonder.com/projects/TurboPi/en/standard/) |
+| 실제 구매처 | **[구매처·판매 페이지 링크]** |
+| 구매 구성 | **[당시 Raspberry Pi 모델·메모리·키트 옵션]** |
+
+현재 판매되는 제품 옵션과 프로젝트 당시 구매 구성은 다를 수 있습니다.
+
 ## 시스템 구성
 
 > **[시스템 구성도]**  
@@ -139,13 +153,16 @@ Diamond의 3D 코너 좌표와 검출한 2D 코너 좌표를 `solvePnP`에 입�
 
 ## 저장소 구성
 
-현재 소스와 시각 자료를 배치할 디렉터리입니다.
+영상 인식·제어 진입 코드와 캘리브레이션·검출·통합 제어 실험 코드를 제공합니다.
 
 ```text
 ArUco_Autonomous_Car/
 ├── README.md
 ├── requirements.txt       # Python 의존성
-├── src/                   # 영상 인식·위치 추정·주행 제어 코드
+├── src/
+│   ├── autonomous_drive.py # 영상 인식·BFS·PID 주행 제어
+│   ├── config.json         # 카메라·마커·모터 설정
+│   └── experiments/        # 개발 단계별 코드
 ├── scripts/               # 실행·캘리브레이션 보조 스크립트
 ├── data/                  # 캘리브레이션 파라미터·실험 로그
 ├── docs/                  # 사진·도식·시연 자료·기술 문서
@@ -161,7 +178,16 @@ ArUco_Autonomous_Car/
 - Hiwonder SDK와 장비별 설정
 - 사용 카메라의 내부 파라미터·왜곡 계수
 
-**[소스 배치 후 실제 진입 파일과 의존성에 맞춘 설치·실행 명령 입력]**
+```bash
+pip install -r requirements.txt
+python src/autonomous_drive.py
+# 장비에서 모터 구동 활성화
+python src/autonomous_drive.py --drive
+```
+
+기본 실행에서는 인식 결과와 제어 명령을 출력합니다. config.json의 calibration_resolution에 실제 캘리브레이션 해상도를 입력해야 합니다. diamond_side_m은 중앙 Diamond 사각형의 실측 크기로 수정합니다. 모터 좌표 부호와 제어 설정은 장비에서 확인해야 합니다.
+
+calib_1109.npz의 K·dists를 data/calibration.json으로 변환해 연결했습니다. 실제 장비 주행은 별도 검증이 필요합니다.
 
 ## 추가 자료
 
