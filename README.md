@@ -172,12 +172,12 @@ ArUco_Autonomous_Car/
 ├── scripts/
 │   ├── run_cart.py
 │   └── calibrate_camera.py
-├── experiments/              # 개발 원본 15개를 종류별 보존
+├── experiments/              # 개발 단계별 실험 코드
 │   ├── calibration/
 │   ├── camera/
 │   ├── vision/
 │   └── control/
-├── data/                     # 원본 NPZ·JSON·로그 안내
+├── data/                     # 캘리브레이션·실험 로그
 ├── docs/                     # 기술 문서·사진/영상 자리
 ├── tests/                    # 검출·자세 추정·제어 통합 테스트
 └── requirements.txt
@@ -199,7 +199,7 @@ python scripts/run_cart.py --drive
 
 기본 실행에서는 모터를 구동하지 않고 인식·제어 상태와 CSV를 기록합니다. 실제 모터 구동은 `--drive`로 활성화합니다. 화면 없이 실행할 때는 `--headless`를 추가합니다.
 
-기본 캘리브레이션은 제공된 `data/calibration_param.npz`의 fisheye 파라미터와 640×480 영상 크기를 사용합니다. `diamond_side_m`은 중앙 Diamond 사각형의 실측 길이로 수정해야 합니다. 모터 부호·Yaw 기준·PID 게인과 속도는 장비에서 맞춥니다. 0.05m 등의 설정값은 초기값입니다.
+기본 캘리브레이션은 `data/calibration_param.npz`의 fisheye 파라미터와 640×480 영상 크기를 사용합니다. `diamond_side_m`은 중앙 Diamond 사각형의 실측 길이로 수정해야 합니다. 모터 부호·Yaw 기준·PID 게인과 속도는 장비에서 맞춥니다. 0.05m 등의 설정값은 초기값입니다.
 
 **관측 실패·오래된 프레임·노드 전환 시간 초과·목적지 도착·사용자 종료 시 정지합니다.** 장애물 회피 기능은 포함하지 않습니다.
 
@@ -240,7 +240,7 @@ OpenCV 4.11에서 **10개 테스트 통과**:
 ## 기술 문서
 
 - [시스템 구성과 좌표·제어 상태](docs/system_architecture.md)
-- [파일별 분석과 정리 내용](docs/code_analysis.md)
+- [구현 구조와 개선 사항](docs/code_analysis.md)
 - [개발 과정과 실험 기록](docs/research_notes.md)
-- [원본 실험 코드 분류](experiments/README.md)
+- [개발 단계별 실험 코드](experiments/README.md)
 - [사진·영상 배치 위치](docs/media/README.md)

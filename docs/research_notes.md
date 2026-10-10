@@ -38,6 +38,6 @@ ChArUco 보드 캘리브레이션 → ArUco 검출 → Diamond 구성 → 가까
 
 ## 코드와 데이터
 
-src/experiments는 전달받은 개발 코드를 보존합니다. src/autonomous_drive.py에는 선택한 마커 중심 연결·중심 판정·이동 상태·목적지 정지 처리를 정리했습니다. 실제 장비 주행은 별도 확인이 필요합니다.
+`experiments`에는 개발 단계별 실험 코드를 분류했습니다. `src`는 카메라 입력부터 마커 검출·위치 추정·경로 탐색·주행 제어까지 모듈별로 구성했습니다. 선택한 마커의 중심 좌표와 ID를 연결하고 중심 판정·노드 전환·목적지 정지를 구현했습니다.
 
 기존 calib_1109.npz의 K·dists를 data/calibration.json으로 변환했습니다. 다른 calibration_param.npz에는 k_array·d_array 등 다른 키가 존재하므로 두 파일을 같은 형식으로 읽지 않습니다.

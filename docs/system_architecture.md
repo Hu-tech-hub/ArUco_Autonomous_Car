@@ -34,7 +34,7 @@
 
 ## 카메라 모델과 좌표
 
-원래 Camera.py에서 사용한 calibration_param.npz는 fisheye 모델이며 영상 크기는 640×480입니다. 현재 기본 설정은 이 파일을 사용합니다. fisheye 코너를 보정한 뒤 pinhole PnP를 계산하고 재투영 검증은 원래 fisheye 모델로 수행합니다.
+calibration_param.npz는 fisheye 모델이며 영상 크기는 640×480입니다. 기본 설정에서 이 파일을 사용합니다. fisheye 코너를 보정한 뒤 pinhole PnP를 계산하고 재투영 검증은 원래 fisheye 모델로 수행합니다.
 
 calib_1109.npz는 K·dists 키를 갖는 별도 파라미터 파일입니다. 일반 카메라 모델로 로딩할 수 있지만 원래 촬영 크기는 별도로 입력해야 합니다.
 
