@@ -123,7 +123,7 @@ Diamond의 3D 코너 좌표와 검출한 2D 코너 좌표를 `solvePnP`에 입�
 
 ### 6. 영상 캡처와 제어 처리
 
-개발 코드에서는 카메라 캡처와 모터 제어를 별도 스레드로 구성했습니다. 영상 큐의 크기를 1로 제한하고 오래된 프레임을 제거해 **최신 관측값을 처리하는 구조**를 사용했습니다.
+개발 코드에서는 카메라 캡처와 모터 제어를 별도 스레드로 구성했습니다. 프레임 하나와 캡처 시각만 보관하고 구동 펄스 이후의 새 프레임을 읽어 **최신 관측값을 처리하는 구조**를 사용했습니다.
 
 > **[영상 캡처·인식·모터 제어 흐름도]**
 
@@ -156,25 +156,31 @@ Diamond의 3D 코너 좌표와 검출한 2D 코너 좌표를 `solvePnP`에 입�
 
 ## 저장소 구성
 
-영상 인식·제어 진입 코드와 캘리브레이션·검출·통합 제어 실험 코드를 제공합니다.
-
 ```text
 ArUco_Autonomous_Car/
-├── README.md
-├── requirements.txt       # Python 의존성
 ├── src/
-│   ├── autonomous_drive.py # 영상 인식·BFS·PID 주행 제어
-│   ├── config.json         # 카메라·마커·모터 설정
-│   └── experiments/        # 개발 단계별 코드
+│   ├── camera.py             # 최신 프레임 캡처·타임스탬프
+│   ├── calibration.py        # pinhole·fisheye 파라미터 처리
+│   ├── detection.py          # Diamond 검출·ID/코너 연결
+│   ├── pose.py               # PnP·Yaw·재투영 오차
+│   ├── planning.py           # BFS·목표 방향
+│   ├── control.py            # PID·상태 전환·모터 명령
+│   ├── configuration.py      # 설정 검증
+│   ├── telemetry.py          # CSV 로그
+│   ├── autonomous_drive.py   # 모듈 통합 진입점
+│   └── config.json
 ├── scripts/
-│   ├── run_cart.py         # 주행 실행 진입점
-│   └── calibrate_camera.py # ChArUco 캘리브레이션·JSON 저장
-├── data/                  # 캘리브레이션 파라미터·실험 로그
-├── docs/                  # 사진·도식·시연 자료·기술 문서
-│   ├── media/             # 사진·영상 배치 안내
-│   ├── system_architecture.md
-│   └── research_notes.md
-
+│   ├── run_cart.py
+│   └── calibrate_camera.py
+├── experiments/              # 개발 원본 15개를 종류별 보존
+│   ├── calibration/
+│   ├── camera/
+│   ├── vision/
+│   └── control/
+├── data/                     # 원본 NPZ·JSON·로그 안내
+├── docs/                     # 기술 문서·사진/영상 자리
+├── tests/                    # 검출·자세 추정·제어 통합 테스트
+└── requirements.txt
 ```
 
 ## 실행 환경
@@ -186,14 +192,16 @@ ArUco_Autonomous_Car/
 
 ```bash
 pip install -r requirements.txt
-python src/autonomous_drive.py
+python scripts/run_cart.py
 # 장비에서 모터 구동 활성화
-python src/autonomous_drive.py --drive
+python scripts/run_cart.py --drive
 ```
 
-기본 실행에서는 인식 결과와 제어 명령을 출력합니다. config.json의 calibration_resolution에 실제 캘리브레이션 해상도를 입력해야 합니다. diamond_side_m은 중앙 Diamond 사각형의 실측 크기로 수정합니다. 모터 좌표 부호와 제어 설정은 장비에서 확인해야 합니다.
+기본 실행에서는 모터를 구동하지 않고 인식·제어 상태와 CSV를 기록합니다. 실제 모터 구동은 `--drive`로 활성화합니다. 화면 없이 실행할 때는 `--headless`를 추가합니다.
 
-calib_1109.npz의 K·dists를 data/calibration.json으로 변환해 연결했습니다. 실제 장비 주행은 별도 검증이 필요합니다.
+기본 캘리브레이션은 제공된 `data/calibration_param.npz`의 fisheye 파라미터와 640×480 영상 크기를 사용합니다. `diamond_side_m`은 중앙 Diamond 사각형의 실측 길이로 수정해야 합니다. 모터 부호·Yaw 기준·PID 게인과 속도는 장비에서 맞춥니다. 0.05m 등의 설정값은 초기값입니다.
+
+**관측 실패·오래된 프레임·노드 전환 시간 초과·목적지 도착·사용자 종료 시 정지합니다.** 장애물 회피 기능은 포함하지 않습니다.
 
 ## 추가 자료
 
@@ -202,19 +210,37 @@ calib_1109.npz의 K·dists를 data/calibration.json으로 변환해 연결했습
 - **[마커 인식·제어 로그 영상]**
 - **[포트폴리오 링크]**
 
-## 보조 스크립트
+## 캘리브레이션
 
 ```bash
-python scripts/run_cart.py
-python scripts/run_cart.py --drive
-# 출력한 보드의 실측 길이를 미터 단위로 입력
+# 실제 인쇄한 5×5 ChArUco 보드 치수 입력 (단위: m)
 python scripts/calibrate_camera.py --square 0.03875 --marker 0.01875
 ```
 
-보드 치수 예시는 기존 코드의 비율을 참고한 값입니다. 실제 출력 크기에 맞춰 입력합니다. Space로 서로 다른 각도의 보드 영상을 10장 이상 캡처한 뒤 Esc로 K·D와 RMS 재투영 오차를 저장합니다.
+치수는 예시입니다. Space로 서로 다른 각도의 보드를 10장 이상 캡처하고 Esc로 K·D와 영상 크기 및 RMS 재투영 오차를 저장합니다. 재캘리브레이션 JSON을 쓰려면 config.json의 calibration을 ../data/calibration.json으로 바꿉니다.
+
+## 검증
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+OpenCV 4.11에서 **10개 테스트 통과**:
+
+- 생성한 Diamond 영상의 ID·코너 검출
+- pinhole·fisheye 합성 투영에서 위치 추정
+- 4×4 격자 전체 출발·도착 조합의 BFS 경로
+- 위치·회전·다음 노드 이동·목적지 정지 상태
+- 오래된 프레임·관측 실패·전환 시간 초과 시 정지
+- 모터 예외 발생 시 정지
+- 검출부터 목적지 정지·CSV 기록까지 통합 흐름
+
+실제 카트 주행과 처리속도는 장비에서 별도로 측정해야 합니다.
+
+## 기술 문서
 
 - [시스템 구성과 좌표·제어 상태](docs/system_architecture.md)
+- [파일별 분석과 정리 내용](docs/code_analysis.md)
 - [개발 과정과 실험 기록](docs/research_notes.md)
+- [원본 실험 코드 분류](experiments/README.md)
 - [사진·영상 배치 위치](docs/media/README.md)
-
-- [파일별 코드 분석과 실행 점검 사항](docs/code_analysis.md)

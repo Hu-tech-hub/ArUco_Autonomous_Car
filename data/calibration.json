@@ -1,4 +1,6 @@
 {
+  "model": "pinhole",
+  "image_size": null,
   "K": [
     [
       531.4818336307013,

@@ -1,32 +1,55 @@
-# 시스템 구성
+# 시스템 구성과 주행 흐름
 
-## 장비
+## 모듈
 
-AliExpress Youfang Smart Store에서 구매한 Hiwonder Raspberry Pi AI Vision Car 보드 미포함 키트에 Raspberry Pi 5를 사용합니다. 상향 카메라로 천장을 촬영하며 메카넘 휠 구동은 Hiwonder SDK에 연결됩니다.
+| 파일 | 책임 |
+| --- | --- |
+| src/camera.py | 별도 스레드에서 최신 프레임과 캡처 시각 제공 |
+| src/calibration.py | NPZ·JSON 로딩과 pinhole·fisheye 모델 구분 |
+| src/detection.py | ArUco·Diamond 검출과 ID·노드·코너 연결 |
+| src/pose.py | solvePnP·카메라 상대 위치·Yaw·재투영 오차 |
+| src/planning.py | 4×4 BFS와 다음 노드의 목표 방향 |
+| src/control.py | PID·주행 상태 전환·모터 실행과 정지 |
+| src/configuration.py | 설정 검증과 경로 해석 |
+| src/telemetry.py | 관측·명령·처리 시간 CSV 기록 |
+| src/autonomous_drive.py | 위 모듈을 연결하는 실행 진입점 |
 
-## 좌표와 관측
+## 관측과 제어
 
-- 영상 좌표: Diamond 중심과 영상 중심의 차이로 X·Y 보정 오차 계산
-- 마커 좌표: solvePnP의 rvec·tvec로 마커에 대한 상대 자세 추정
-- 격자 좌표: Diamond ID 네 개를 노드 하나에 대응. 4×4 격자에서 BFS 탐색
-- 방향: Rodrigues 회전 행렬에서 Yaw 계산. 다음 노드 방향과의 차이를 ±180°로 정규화
+최신 프레임 → ArUco 검출 → Diamond 구성 → 기준 Diamond 선택 → PnP → 위치·방향 관측 → BFS → 제어 상태 결정 → 모터 펄스 실행 → 새 프레임 관측
 
-## 제어 상태
+다음 노드가 보이면 해당 Diamond를 우선 선택합니다. 그렇지 않으면 영상 중심에 가장 가까운 알려진 Diamond를 선택합니다. ID와 중심 좌표는 같은 객체에서 읽습니다.
 
-마커 미검출 → 정지
+## 주행 상태
 
-마커 검출 → 중심 보정 → 목표 노드이면 정지 → 목표 방향으로 회전 → 다음 노드 이동 → 재관측
+1. NO_OBSERVATION: 마커가 없거나 관측이 오래됐으면 정지합니다.
+2. CENTERING: X 또는 Y 오차가 허용 범위를 벗어나면 위치를 보정합니다.
+3. ROTATING: 다음 노드 방향과 Yaw의 각도 차이를 PID에 입력합니다.
+4. SETTLING: 연속 관측이 허용 범위에 들어오는지 확인합니다.
+5. MOVING: 다음 노드를 기억하고 전진합니다. 새 노드를 보면 다시 위치와 방향을 보정합니다.
+6. ARRIVED: 목적지 중심에 도달하고 안정화 조건을 만족하면 정지합니다.
+7. TRANSITION_TIMEOUT: 다음 노드로 넘어가는 시간이 한도를 넘으면 정지 후 실행을 종료합니다.
 
-주행 진입 코드는 src/autonomous_drive.py입니다. 캡처·제어 스레드를 분리한 개발 버전은 src/experiments/Dia_Last_2.py에 있습니다. 현재 진입 코드는 각 구동 펄스 이후 영상을 다시 읽는 순차 구조입니다.
+장애물 탐지·회피는 현재 포함하지 않습니다. 천장 마커가 관측 가능한 실험 환경을 기준으로 합니다.
 
-## 설정
+## 카메라 모델과 좌표
 
-src/config.json에서 해상도·마커 크기·ID 매핑·모터 부호·목적지를 지정합니다. calibration_resolution은 실제 캘리브레이션 영상 크기로 입력해야 합니다. diamond_side_m은 실측 중앙 사각형의 한 변 길이로 설정합니다.
+원래 Camera.py에서 사용한 calibration_param.npz는 fisheye 모델이며 영상 크기는 640×480입니다. 현재 기본 설정은 이 파일을 사용합니다. fisheye 코너를 보정한 뒤 pinhole PnP를 계산하고 재투영 검증은 원래 fisheye 모델로 수행합니다.
 
-## 시각 자료
+calib_1109.npz는 K·dists 키를 갖는 별도 파라미터 파일입니다. 일반 카메라 모델로 로딩할 수 있지만 원래 촬영 크기는 별도로 입력해야 합니다.
+
+마커 X는 인쇄물을 정방향으로 보았을 때 오른쪽이고 Y는 아래 방향입니다. yaw_sign·yaw_offset_deg와 모터 좌표 부호는 카메라 장착 방향에 맞춰 설정합니다. 각 천장 마커가 공통 방향으로 부착돼 있어야 같은 목표 방향을 사용할 수 있습니다.
+
+## 실시간 처리와 기록
+
+카메라 스레드는 프레임 하나만 보관합니다. 제어는 주 스레드에서 실행하며 모터 펄스가 끝난 뒤 새로 캡처된 프레임을 기다립니다. 프레임 번호·캡처 시각·시간 제한을 사용합니다.
+
+PID는 속도 명령의 크기에 반영됩니다. translation은 X·Y 출력이며 rotation은 각속도 명령입니다. 정확한 물리 단위와 동작 부호는 Hiwonder SDK 및 장비에서 대조해야 합니다.
+
+CSV에는 마커 노드·중심 오차·Yaw·재투영 오차·처리 시간·상태·명령을 남깁니다. processing_ms는 영상 검출부터 제어 판단까지의 시간이며 전체 주행 갱신 주기와 다릅니다.
 
 **[시스템 구성도]**
 
-**[4×4 천장 마커 배치도]**
+**[천장 4×4 마커 배치도]**
 
-**[좌표계와 회전 오차 설명도]**
+**[좌표계·회전 오차 설명도]**
