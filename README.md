@@ -174,7 +174,7 @@ ArUco_Autonomous_Car/
 │   ├── media/             # 사진·영상 배치 안내
 │   ├── system_architecture.md
 │   └── research_notes.md
-└── models/                # 기존 디렉터리
+
 ```
 
 ## 실행 환경
@@ -216,3 +216,5 @@ python scripts/calibrate_camera.py --square 0.03875 --marker 0.01875
 - [시스템 구성과 좌표·제어 상태](docs/system_architecture.md)
 - [개발 과정과 실험 기록](docs/research_notes.md)
 - [사진·영상 배치 위치](docs/media/README.md)
+
+- [파일별 코드 분석과 실행 점검 사항](docs/code_analysis.md)
