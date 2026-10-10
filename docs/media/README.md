@@ -27,3 +27,9 @@
 - `expansion_board_interfaces.png`: 확장보드 인터페이스
 
 출처 문서: `[캡디]김상엽 진행 내용 보고.docx`와 `캡스톤 디자인 결과 보고서.docx`에 수록된 이미지.
+
+## 동시 재생 GIF
+
+- `drive.gif`: 주행 영상 GIF
+- `recognition_log.gif`: 마커 인식·로그 GIF
+- 동일한 480×360 크기와 초당 8프레임으로 전체 영상을 반복 재생합니다.
